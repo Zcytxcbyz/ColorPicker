@@ -116,6 +116,10 @@ namespace ColorPicker
             CursorFile = AppDataPath + "\\circle.cur";
             CursorFile2 = AppDataPath + "\\circle_white.cur";
             SettingFile = AppDataPath + "\\config.json";
+            if (!Directory.Exists(AppDataPath))
+            {
+                Directory.CreateDirectory(AppDataPath);
+            }
             if (!File.Exists(CursorFile))
             {
                 FileStream fs = new FileStream(CursorFile,FileMode.Create);
