@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace ColorPicker
@@ -13,5 +8,22 @@ namespace ColorPicker
     /// </summary>
     public partial class App : Application
     {
+        private void Application_Startup(object sender, StartupEventArgs e)
+        {
+            try
+            {
+                MainWindow window = new MainWindow();
+                window.Show();
+            }
+            catch (Exception err)
+            {
+                MessageBoxResult result=
+                MessageBox.Show(err.Message, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                if (result == MessageBoxResult.OK)
+                {
+                    Environment.Exit(0);
+                }
+            }
+        }
     }
 }

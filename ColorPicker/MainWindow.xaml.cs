@@ -31,6 +31,7 @@ using LinearGradientBrush = System.Windows.Media.LinearGradientBrush;
 using System.Xml;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Drawing.Printing;
 
 namespace ColorPicker
 {
@@ -87,7 +88,7 @@ namespace ColorPicker
             StrokeThickness = 2,
             Cursor = Cursors.Hand
         };
-        private HSVCOLOR loadcolor;
+
         public MainWindow()  
         {
             InitializeComponent();
@@ -104,7 +105,7 @@ namespace ColorPicker
 
         private TextBox[] TextBoxList;
         private void Window_Loaded(object sender, RoutedEventArgs e)
-        {         
+        {
             TextBoxList = new TextBox[]
             {
                 ParaR_RGB,ParaG_RGB,ParaB_RGB,
@@ -115,10 +116,6 @@ namespace ColorPicker
             CursorFile = AppDataPath + "\\circle.cur";
             CursorFile2 = AppDataPath + "\\circle_white.cur";
             SettingFile = AppDataPath + "\\config.json";
-            if (!Directory.Exists(AppDataPath))
-            {
-                Directory.CreateDirectory(AppDataPath);
-            }
             if (!File.Exists(CursorFile))
             {
                 FileStream fs = new FileStream(CursorFile,FileMode.Create);
@@ -164,15 +161,14 @@ namespace ColorPicker
             StreamReader sr = new StreamReader(SettingFile);
             JsonTextReader jtr = new JsonTextReader(sr);
             JObject jobj = (JObject)JToken.ReadFrom(jtr);
-            JToken jtwindow = jobj["window"];
+            //JToken jtwindow = jobj["window"];
             JToken jtcolor = jobj["color"];
-            this.Top = (double)jtwindow["top"];
-            this.Left = (double)jtwindow["left"];
+            //this.Top = (double)jtwindow["top"];
+            //this.Left = (double)jtwindow["left"];
             double H = (double)jtcolor["H"];
             double S = (double)jtcolor["S"];
             double V = (double)jtcolor["V"];
             sr.Close();
-            this.Visibility = Visibility.Visible;
             HSVCOLOR hsvcolor = new HSVCOLOR(this, H, S, V);
             HSelect_paint(); 
             Canvas.SetLeft(rectangle, hsvcolor.HSelectorX);
@@ -314,9 +310,14 @@ namespace ColorPicker
         private void HSelector_MouseMove(object sender, MouseEventArgs e)
         {
             if (MouseButtonPressed)
-            {
+            {   
                 Point point = e.GetPosition((Canvas)sender);
                 ChangeSlider(point.Y);
+                HSVCOLOR hsvcolor = new HSVCOLOR(this);
+                Textbox_TextChanged_Cancel();
+                ParaH_HSV.Text = Math.Round(hsvcolor.H).ToString();
+                ParaH_HSL.Text = Math.Round(hsvcolor.H).ToString();
+                Textbox_TextChanged_Add();
             }
         }
 
